@@ -22,7 +22,7 @@
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    self.tokenizer = [[LinioPayTokenizer alloc] initWithKey:@"test_0618f5c21603cd9d33ba8a8f0c9e2446283"];
+    self.tokenizer = [[LinioPayTokenizer alloc] initWithKey:@"test_0618f5c21603cd9d33ba8a8f0c9e2446283" environment:prod];
     
     self.stringWithMoreThan255Characters = @"Omar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral FloridaOmar Gonzalez Gonzalez Family Friends Pets and Community of Doral Florida";
 }

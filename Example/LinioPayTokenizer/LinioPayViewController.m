@@ -21,8 +21,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-
-    _tokenizer = [[LinioPayTokenizer alloc] initWithKey:@"test_20e3ec8c5ce9bb5adced9b8abe297929684"];
+    _tokenizer = [[LinioPayTokenizer alloc] initWithKey:@"test_20e3ec8c5ce9bb5adced9b8abe297929684" environment:prod];
 }
 
 - (void)didReceiveMemoryWarning
