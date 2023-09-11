@@ -13,6 +13,7 @@
 
 @property (nonatomic, readwrite, strong) NSString *tokenizationKey;
 @property (nonatomic, readwrite, strong) NSMutableArray *errorMessages;
+@property TokenEnvironment *environment;
 
 @end
 
@@ -37,9 +38,10 @@ const NSString *FORM_DICT_KEY_COUNTRY = @"country_code";
 const NSString *FORM_DICT_KEY_POSTAL_CODE = @"postal_code";
 const NSString *FORM_DICT_KEY_EMAIL = @"email";
 
--(id)initWithKey:(NSString *)key
+-(id)initWithKey:(NSString *)key environment:(TokenEnvironment)environment
 {
     self = [super init];
+    _environment = &environment;
     _errorMessages = [NSMutableArray arrayWithCapacity:1];
     
     if(self)
@@ -825,9 +827,20 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
         }
         
         NSLog(@"JSON is %@", [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]);
+
+        NSString *url = @"";
+        switch (*_environment) {
+            case prod:
+                url = LPTS_API_PATH;
+                break;
+            case staging:
+                url = LPTS_API_STG_PATH;
+                break;
+            default:
+                NSLog(@"no environment entered");
+        }
         
-        // Else submit form
-        NSURL * apiURL = [NSURL URLWithString:LPTS_API_PATH];
+        NSURL * apiURL = [NSURL URLWithString:url];
         NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:apiURL];
         [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];

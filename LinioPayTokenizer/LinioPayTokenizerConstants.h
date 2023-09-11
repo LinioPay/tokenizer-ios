@@ -11,6 +11,7 @@
 @interface LinioPayTokenizerConstants : NSObject
 
 extern NSString * const LPTS_API_PATH;
+extern NSString * const LPTS_API_STG_PATH;
 extern NSString * const ERROR_DOMAIN;
 extern NSUInteger const CHAR_LENGTH_KEY;
 extern NSUInteger const CHAR_LENGTH_CVC;

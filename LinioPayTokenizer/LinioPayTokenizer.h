@@ -23,6 +23,11 @@ typedef NS_ENUM(NSInteger, AddressLineType) {
     Phone
 };
 
+typedef NS_ENUM(NSInteger, TokenEnvironment) {
+    prod,
+    staging
+};
+
 extern const NSString *FORM_DICT_KEY_NAME;
 extern const NSString *FORM_DICT_KEY_NUMBER;
 extern const NSString *FORM_DICT_KEY_CVC;
@@ -42,7 +47,7 @@ extern const NSString *FORM_DICT_KEY_COUNTY;
 extern const NSString *FORM_DICT_KEY_POSTAL_CODE;
 extern const NSString *FORM_DICT_KEY_EMAIL;
 
-- (id)initWithKey:(NSString *)key;
+- (id)initWithKey:(NSString *)key environment:(TokenEnvironment)environment;
 - (BOOL)validateKey:(NSString *)key error:(NSError **)outError;
 - (BOOL)validateName:(NSString*)name type:(NameType)nameType error:(NSError **)outError;
 - (BOOL)validateNumber:(NSString *)cardNumber error:(NSError **)outError;
