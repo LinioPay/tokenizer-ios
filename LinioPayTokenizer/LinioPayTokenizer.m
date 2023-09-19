@@ -13,7 +13,7 @@
 
 @property (nonatomic, readwrite, strong) NSString *tokenizationKey;
 @property (nonatomic, readwrite, strong) NSMutableArray *errorMessages;
-@property TokenEnvironment *environment;
+@property (readwrite) TokenEnvironment *environment;
 
 @end
 
@@ -41,7 +41,7 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
 -(id)initWithKey:(NSString *)key environment:(TokenEnvironment)environment
 {
     self = [super init];
-    _environment = &environment;
+    self.environment = environment;
     _errorMessages = [NSMutableArray arrayWithCapacity:1];
     
     if(self)
@@ -191,8 +191,8 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
                                    options:(NSStringEnumerationReverse |NSStringEnumerationByComposedCharacterSequences)
                                 usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop)
      {
-         [reversedString appendString:substring];
-     }];
+        [reversedString appendString:substring];
+    }];
     
     NSUInteger oddSum = 0, evenSum = 0;
     
@@ -588,13 +588,13 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
         NSString *emailRegex = [NSString stringWithUTF8String:cRegex];
         NSPredicate *emailPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES[c] %@", emailRegex];
         BOOL isValid = [emailPredicate evaluateWithObject:email];
-    
+        
         if (!isValid) {
             *outError =  [NSError errorWithDomain:ERROR_DOMAIN
                                              code:ERROR_CODE_INVALID_EMAIL
                                          userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:ERROR_DESC_INVALID_EMAIL, email]}];
         }
-    
+        
         return isValid;
     }
     
@@ -707,8 +707,8 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
         }
         
         if(![self validateOptionalAddressLine:[addressData objectForKey:FORM_DICT_KEY_STREET_2]
-                                           type:AddressStreet2
-                                          error:&street2Error])
+                                         type:AddressStreet2
+                                        error:&street2Error])
         {
             if (street2Error != nil)
             {
@@ -717,8 +717,8 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
         }
         
         if(![self validateOptionalAddressLine:[addressData objectForKey:FORM_DICT_KEY_STREET_3]
-                                           type:AddressStreet3
-                                          error:&street3Error])
+                                         type:AddressStreet3
+                                        error:&street3Error])
         {
             if (street3Error != nil)
             {
@@ -804,14 +804,14 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
     else
     {
         NSDictionary *postData =@{
-                                  @"tokenization_key": _tokenizationKey,
-                                  @"token": @{
-                                          @"one_time": [NSNumber numberWithBool:oneTime],
-                                          @"payment_method": @{
-                                                  @"charge_card": formValues,
-                                                  },
-                                          },
-                                  };
+            @"tokenization_key": _tokenizationKey,
+            @"token": @{
+                @"one_time": [NSNumber numberWithBool:oneTime],
+                @"payment_method": @{
+                    @"charge_card": formValues,
+                },
+            },
+        };
         
         NSError *jsonError;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:postData
@@ -827,17 +827,19 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
         }
         
         NSLog(@"JSON is %@", [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]);
-
-        NSString *url = @"";
-        switch (*_environment) {
-            case prod:
-                url = LPTS_API_PATH;
-                break;
-            case staging:
-                url = LPTS_API_STG_PATH;
-                break;
-            default:
-                NSLog(@"no environment entered");
+        
+        NSString *url;
+        
+        // Check the value of the environment variable using if statements
+        if (self.environment == prod) {
+            // Assign the production url to the url variable
+            url = LPTS_API_PATH;
+        } else if (self.environment == staging) {
+            // Assign the staging url to the url variable
+            url = LPTS_API_STG_PATH;
+        } else {
+            // Log a message if no environment is entered
+            NSLog(@"no environment entered");
         }
         
         NSURL * apiURL = [NSURL URLWithString:url];
@@ -852,29 +854,30 @@ const NSString *FORM_DICT_KEY_EMAIL = @"email";
                                                                 delegateQueue:[NSOperationQueue mainQueue]];
         NSURLSessionDataTask *dataTask = [defaultSession dataTaskWithRequest:urlRequest
                                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *sessionError) {
-                                                               if(sessionError != nil)
-                                                               {
-                                                                   return completion(nil, sessionError);
-                                                               }
-                                                               else
-                                                               {
-                                                                   NSError* jsonError;
-                                                                   NSDictionary* results = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                                           options:NSJSONReadingAllowFragments
-                                                                                                                             error:&jsonError];
-                                                                   
-                                                                   if(jsonError!=nil)
-                                                                   {
-                                                                       return completion(nil,jsonError);
-                                                                   }
-                                                                   else
-                                                                   {
-                                                                       return completion(results,nil);
-                                                                   }
-                                                               }
-                                                           }];
+            if(sessionError != nil)
+            {
+                return completion(nil, sessionError);
+            }
+            else
+            {
+                NSError* jsonError;
+                NSDictionary* results = [NSJSONSerialization JSONObjectWithData:data
+                                                                        options:NSJSONReadingAllowFragments
+                                                                          error:&jsonError];
+                
+                if(jsonError!=nil)
+                {
+                    return completion(nil,jsonError);
+                }
+                else
+                {
+                    return completion(results,nil);
+                }
+            }
+        }];
         [dataTask resume];
     }
 }
 
 @end
+

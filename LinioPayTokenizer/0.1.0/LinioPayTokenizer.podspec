@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LinioPayTokenizer'
-  s.version          = '0.1.1'
+  s.version          = '0.1.3'
   s.summary          = 'LinioPay Tokenizer is the IOS library interface to get customer’s credit card information in a secure way.'
   s.description      = <<-DESC
 LinioPay Tokenizer is the IOS library interface to get customer’s credit card information in a secure way. It allows you to set a predetermined
