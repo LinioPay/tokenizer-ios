@@ -11,7 +11,7 @@
 @implementation LinioPayTokenizerConstants
 
 NSString * const LPTS_API_PATH = @"https://vault.liniopay.com/token";
-NSString * const LPTS_API_STG_PATH = @"http://vault-new.staging-liniopay.com/token";
+NSString * const LPTS_API_STG_PATH = @"https://vault-new.staging-liniopay.com/token";
 NSString * const ERROR_DOMAIN = @"com.LinioPay.Tokenizer.ErrorDomain";
 NSUInteger const CHAR_LENGTH_KEY = 40;
 NSUInteger const CHAR_LENGTH_CVC = 3;
